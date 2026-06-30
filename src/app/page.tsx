@@ -1,66 +1,132 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useEffect, useState } from "react";
+import Alert from "react-bootstrap/Alert";
+import Badge from "react-bootstrap/Badge";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
+
+type Categoria = {
+  documentId: string;
+  name: string;
+};
+
+type Evento = {
+  documentId: string;
+  Nome: string;
+  Descricao?: string;
+  Data?: string | null;
+  Localizacao?: string;
+  categories?: Categoria[];
+};
+
+function formatarData(data?: string | null) {
+  if (!data) return null;
+
+  return new Intl.DateTimeFormat("pt-PT", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(data));
+}
 
 export default function Home() {
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [aCarregar, setACarregar] = useState(true);
+  const [erro, setErro] = useState("");
+
+  useEffect(() => {
+    async function carregarEventos() {
+      try {
+        const resposta = await fetch(
+            `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/eventos?populate=categories`
+        );
+
+        if (!resposta.ok) {
+          throw new Error(`Erro HTTP: ${resposta.status}`);
+        }
+
+        const resultado = await resposta.json();
+        setEventos(resultado.data);
+      } catch {
+        setErro(
+            "Não foi possível obter os eventos. Confirma se o Strapi está a correr e se as permissões públicas estão ativas."
+        );
+      } finally {
+        setACarregar(false);
+      }
+    }
+
+    carregarEventos();
+  }, []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      <main className="py-5">
+        <Container>
+          <header className="mb-5">
+            <h1 className="display-5 fw-bold">TicketLine</h1>
+            <p className="lead text-muted">
+              Encontra eventos e compra os teus bilhetes.
+            </p>
+          </header>
+
+          <h2 className="mb-4">Eventos disponíveis</h2>
+
+          {aCarregar && (
+              <div className="text-center py-5">
+                <Spinner animation="border" role="status" />
+                <p className="mt-3">A carregar eventos...</p>
+              </div>
+          )}
+
+          {erro && <Alert variant="danger">{erro}</Alert>}
+
+          {!aCarregar && !erro && eventos.length === 0 && (
+              <Alert variant="info">
+                Ainda não existem eventos publicados no Strapi.
+              </Alert>
+          )}
+
+          <Row className="g-4">
+            {eventos.map((evento) => (
+                <Col key={evento.documentId} md={6} lg={4}>
+                  <Card className="h-100 shadow-sm">
+                    <Card.Body>
+                      <Card.Title>{evento.Nome}</Card.Title>
+
+                      {evento.Descricao && (
+                          <Card.Text>{evento.Descricao}</Card.Text>
+                      )}
+
+                      {evento.Data && (
+                          <Card.Text className="text-muted mb-1">
+                            <strong>Data:</strong> {formatarData(evento.Data)}
+                          </Card.Text>
+                      )}
+
+                      {evento.Localizacao && (
+                          <Card.Text className="text-muted">
+                            <strong>Local:</strong> {evento.Localizacao}
+                          </Card.Text>
+                      )}
+
+                      {evento.categories?.map((categoria) => (
+                          <Badge
+                              bg="secondary"
+                              className="me-2"
+                              key={categoria.documentId}
+                          >
+                            {categoria.name}
+                          </Badge>
+                      ))}
+                    </Card.Body>
+                  </Card>
+                </Col>
+            ))}
+          </Row>
+        </Container>
       </main>
-    </div>
   );
 }
