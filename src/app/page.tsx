@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import Link from "next/link";
 
 type Categoria = {
   documentId: string;
@@ -121,6 +122,12 @@ export default function Home() {
                             {categoria.name}
                           </Badge>
                       ))}
+                      <Link
+                          href={`/eventos/${evento.documentId}`}
+                          className="btn btn-primary mt-3"
+                      >
+                        Ver detalhes
+                      </Link>
                     </Card.Body>
                   </Card>
                 </Col>
