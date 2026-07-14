@@ -109,11 +109,6 @@ export default async function AdminPage() {
                         </div>
                     </div>
                 </div>
-
-                <div className="alert alert-warning mt-4">
-                    Esta área ainda está protegida apenas por login. Mais tarde vamos
-                    limitar o acesso apenas a administradores.
-                </div>
             </div>
         </main>
     );
