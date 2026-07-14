@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { requireGestor } from "@/lib/auth";
 
 type UserMe = {
     id: number;
@@ -34,11 +34,7 @@ async function obterUtilizadorAtual(): Promise<UserMe | null> {
 }
 
 export default async function AdminPage() {
-    const utilizador = await obterUtilizadorAtual();
-
-    if (!utilizador) {
-        redirect("/login");
-    }
+    const utilizador = await requireGestor();
 
     return (
         <main className="py-5">

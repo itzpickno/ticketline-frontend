@@ -6,6 +6,7 @@ import {
     criarSeccaoAction,
     editarSeccaoAction,
 } from "./actions";
+import { requireGestor } from "@/lib/auth";
 
 type Evento = {
     documentId: string;
@@ -88,6 +89,7 @@ export default async function AdminSeccoesPage({
                                                }: {
     searchParams: Promise<{ success?: string; error?: string }>;
 }) {
+    await requireGestor();
     const [seccoes, eventos] = await Promise.all([
         obterSeccoes(),
         obterEventos(),

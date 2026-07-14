@@ -6,6 +6,7 @@ import {
     criarBilheteAction,
     editarBilheteAction,
 } from "./actions";
+import { requireGestor } from "@/lib/auth";
 
 type Evento = {
     documentId: string;
@@ -105,6 +106,7 @@ export default async function AdminBilhetesPage({
                                                 }: {
     searchParams: Promise<{ success?: string; error?: string }>;
 }) {
+    await requireGestor();
     const [bilhetes, seccoes] = await Promise.all([
         obterBilhetes(),
         obterSeccoes(),

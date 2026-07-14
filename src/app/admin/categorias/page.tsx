@@ -6,6 +6,7 @@ import {
     criarCategoriaAction,
     editarCategoriaAction,
 } from "./actions";
+import { requireGestor } from "@/lib/auth";
 
 type Evento = {
     documentId: string;
@@ -94,6 +95,7 @@ export default async function AdminCategoriasPage({
                                                   }: {
     searchParams: Promise<{ success?: string; error?: string }>;
 }) {
+    await requireGestor();
     const [categorias, eventos] = await Promise.all([
         obterCategorias(),
         obterEventos(),

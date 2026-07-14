@@ -6,6 +6,7 @@ import {
     criarEventoAction,
     editarEventoAction,
 } from "./actions";
+import { requireGestor } from "@/lib/auth";
 
 type Categoria = {
     documentId: string;
@@ -71,6 +72,7 @@ export default async function AdminEventosPage({
                                                }: {
     searchParams: Promise<{ success?: string; error?: string }>;
 }) {
+    await requireGestor();
     const eventos = await obterEventos();
     const { success, error } = await searchParams;
 

@@ -34,7 +34,12 @@ async function obterUtilizadorAtual(): Promise<UserMe | null> {
     return resposta.json();
 }
 
-export default async function AreaUtilizadorPage() {
+export default async function AreaUtilizadorPage({
+                                                     searchParams,
+                                                 }: {
+    searchParams: Promise<{ error?: string }>;
+}) {
+    const { error } = await searchParams;
     const utilizador = await obterUtilizadorAtual();
 
     if (!utilizador) {
@@ -44,6 +49,11 @@ export default async function AreaUtilizadorPage() {
     return (
         <main className="py-5">
             <div className="container" style={{ maxWidth: "700px" }}>
+                {error === "sem-permissao" && (
+                    <div className="alert alert-danger">
+                        Não tens permissões para aceder ao painel de administração.
+                    </div>
+                )}
                 <div className="card shadow-sm">
                     <div className="card-body p-4">
                         <h1 className="mb-3">Área do Utilizador</h1>
