@@ -78,6 +78,10 @@ export default function Home() {
               Login
             </Link>
 
+            <Link href="/registar" className="btn btn-outline-success">
+              Criar conta
+            </Link>
+
             <Link href="/area-utilizador" className="btn btn-primary">
               Área do utilizador
             </Link>

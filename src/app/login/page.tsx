@@ -1,4 +1,5 @@
 import { loginAction } from "./actions";
+import Link from "next/link";
 
 export default async function LoginPage({
                                             searchParams,
@@ -59,6 +60,9 @@ export default async function LoginPage({
                         </button>
                     </div>
                 </form>
+                <div className="mt-3">
+                    <Link href="/registar">Ainda não tenho conta</Link>
+                </div>
             </div>
         </main>
     );
