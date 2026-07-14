@@ -73,6 +73,16 @@ export default function Home() {
             </p>
           </header>
 
+          <div className="d-flex gap-2 mt-3">
+            <Link href="/login" className="btn btn-outline-primary">
+              Login
+            </Link>
+
+            <Link href="/area-utilizador" className="btn btn-primary">
+              Área do utilizador
+            </Link>
+          </div>
+
           <h2 className="mb-4">Eventos disponíveis</h2>
 
           {aCarregar && (
