@@ -56,9 +56,13 @@ export default async function AreaUtilizadorPage() {
                             <strong>Email:</strong> {utilizador.email}
                         </p>
 
-                        <div className="d-flex gap-2">
+                        <div className="d-flex gap-2 flex-wrap">
                             <Link href="/" className="btn btn-primary">
                                 Voltar aos eventos
+                            </Link>
+
+                            <Link href="/admin" className="btn btn-outline-primary">
+                                Painel admin
                             </Link>
 
                             <form action={logoutAction}>
